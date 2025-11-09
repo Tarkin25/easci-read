@@ -15,15 +15,17 @@ function App() {
   }
 
   return (
-    <div className="h-screen flex flex-col">
-      <header className="bg-slate-950 text-white p-8 flex items-center gap-4">
+    <div className="h-screen flex flex-col max-w-screen">
+      <header className="bg-slate-950 text-white p-4 flex items-center gap-4 md:p-8">
         <img src={readIcon} width={48} />
         <h1 className="text-4xl">EaSci-Read</h1>
       </header>
       <main className="flex grow items-center justify-center bg-slate-800">
-        <div className="flex flex-col gap-4">
-          <FilePicker onFileChange={setFile} />
-          <button className="text-white p-2 bg-slate-950 cursor-pointer rounded-xl disabled:bg-slate-900 disabled:cursor-not-allowed hover:bg-slate-900" onClick={onRemoveReferences} disabled={!file}>Remove references</button>
+        <div className="px-2 md:px-4 w-2xs sm:w-sm md:w-lg">
+          <div className="flex grow flex-col gap-4">
+            <FilePicker onFileChange={setFile} />
+            <button className="text-white p-2 bg-slate-950 cursor-pointer rounded-xl disabled:bg-slate-900 disabled:cursor-not-allowed hover:bg-slate-900" onClick={onRemoveReferences} disabled={!file}>Remove references</button>
+          </div>
         </div>
       </main>
     </div>

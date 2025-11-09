@@ -20,10 +20,10 @@ export default function FilePicker(props: FilePickerProps) {
     }
 
     return (
-        <div className=" text-white flex items-center w-lg">
+        <div className=" text-white flex items-center w-full">
             <input ref={inputRef} className="hidden" type="file" accept="application/pdf" multiple={false} onChange={handleInputChange} />
             <button className="bg-slate-950 rounded-l-xl p-2 cursor-pointer hover:bg-slate-900 shadow-2xl" onClick={openFileDialog}>Select File</button>
-            <div className="bg-slate-600 p-2 rounded-r-xl grow text-center">{file?.name || "No file selected"}</div>
+            <div className="bg-slate-600 p-2 rounded-r-xl grow text-center overflow-hidden min-w-0 whitespace-nowrap text-ellipsis flex-1">{file?.name || "No file selected"}</div>
         </div>
     )
 }
