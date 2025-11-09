@@ -1,33 +1,28 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import reactLogo from './assets/react.svg'
 import viteLogo from '/vite.svg'
+import dummyPdf from '/do-you-feel-young-enough.pdf'
 import './App.css'
+import { useMupdf } from '@/hooks/useMupdf.hook'
+
+async function downloadFromURL(url: string): Promise<ArrayBuffer> {
+  const buffer = await fetch(url).then(res => res.arrayBuffer());
+  return buffer;
+}
 
 function App() {
-  const [count, setCount] = useState(0)
+  const { removeReferences, downloadDocument } = useMupdf();
+
+  async function onRemoveReferences() {
+    const buffer = await downloadFromURL(dummyPdf);
+    removeReferences(buffer);
+    downloadDocument();
+  }
 
   return (
     <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
+      <h1 style={{color: "white"}}>Easci-Read</h1>
+      <button onClick={onRemoveReferences}>Remove References</button>
     </>
   )
 }
