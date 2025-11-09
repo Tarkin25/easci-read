@@ -1,21 +1,17 @@
-import { useMupdf } from '@/hooks/useMupdf.hook'
 import readIcon from '/read-svgrepo-com.svg'
 import FilePicker from './components/FilePicker';
 import { useState } from 'react';
-
-async function downloadFromURL(url: string): Promise<ArrayBuffer> {
-  const buffer = await fetch(url).then(res => res.arrayBuffer());
-  return buffer;
-}
+import { useMupdf } from './hooks/useMupdf.hook';
 
 function App() {
   const { removeReferences, downloadDocument } = useMupdf();
   const [file, setFile] = useState<File | null>(null);
 
   async function onRemoveReferences() {
-    const buffer = await file!.arrayBuffer();
+    const pdf = file!;
+    const buffer = await pdf.arrayBuffer();
     removeReferences(buffer);
-    downloadDocument();
+    downloadDocument(pdf.name);
   }
 
   return (

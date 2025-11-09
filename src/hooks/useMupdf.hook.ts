@@ -1,10 +1,9 @@
-import { MUPDF_LOADED, type MupdfWorker } from "@/workers/mupdf.worker";
+import { MUPDF_LOADED, MupdfWorker } from "../workers/mupdf.worker";
 import * as Comlink from "comlink";
 import type { Remote } from "comlink";
 import { useCallback, useEffect, useRef, useState } from "react";
 
 export function useMupdf() {
-  const [currentPage, setCurrentPage] = useState(0);
   const [isWorkerInitialized, setIsWorkerInitialized] = useState(false);
   const mupdfWorker = useRef<Remote<MupdfWorker>>(null);
 
@@ -36,13 +35,14 @@ export function useMupdf() {
     return mupdfWorker.current!.removeReferences(arrayBuffer);
   }, []);
 
-  const downloadDocument = useCallback(async () => {
+  const downloadDocument = useCallback(async (filename: string) => {
+    const download = filename.replace(".pdf", "") + "-without-references.pdf";
     const buffer = await mupdfWorker.current!.getDocumentBytes();
-    const blob = new Blob([buffer], { type: "application/pdf"});
+    const blob = new Blob([buffer as BlobPart], { type: "application/pdf"});
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
     a.href = url;
-    a.download = "cleaned.pdf";
+    a.download = download;
     a.click();
   }, [])
 
@@ -53,7 +53,6 @@ export function useMupdf() {
   return {
     isWorkerInitialized,
     loadDocument,
-    currentPage,
     removeReferences,
     downloadDocument,
   };
