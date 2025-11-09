@@ -63,7 +63,7 @@ export class MupdfWorker {
                     }
                 }
 
-                page.applyRedactions(true);
+                page.applyRedactions(false);
             }
 
         }

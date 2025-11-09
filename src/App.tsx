@@ -1,9 +1,7 @@
-import { useEffect, useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import dummyPdf from '/do-you-feel-young-enough.pdf'
-import './App.css'
 import { useMupdf } from '@/hooks/useMupdf.hook'
+import readIcon from '/read-svgrepo-com.svg'
+import FilePicker from './components/FilePicker';
+import { useState } from 'react';
 
 async function downloadFromURL(url: string): Promise<ArrayBuffer> {
   const buffer = await fetch(url).then(res => res.arrayBuffer());
@@ -12,18 +10,27 @@ async function downloadFromURL(url: string): Promise<ArrayBuffer> {
 
 function App() {
   const { removeReferences, downloadDocument } = useMupdf();
+  const [file, setFile] = useState<File | null>(null);
 
   async function onRemoveReferences() {
-    const buffer = await downloadFromURL(dummyPdf);
+    const buffer = await file!.arrayBuffer();
     removeReferences(buffer);
     downloadDocument();
   }
 
   return (
-    <>
-      <h1 style={{color: "white"}}>Easci-Read</h1>
-      <button onClick={onRemoveReferences}>Remove References</button>
-    </>
+    <div className="h-screen flex flex-col">
+      <header className="bg-slate-950 text-white p-8 flex items-center gap-4">
+        <img src={readIcon} width={48} />
+        <h1 className="text-4xl">EaSci-Read</h1>
+      </header>
+      <main className="flex grow items-center justify-center bg-slate-800">
+        <div className="flex flex-col gap-4">
+          <FilePicker onFileChange={setFile} />
+          <button className="text-white p-2 bg-slate-950 cursor-pointer rounded-xl disabled:bg-slate-900 disabled:cursor-not-allowed hover:bg-slate-900" onClick={onRemoveReferences} disabled={!file}>Remove references</button>
+        </div>
+      </main>
+    </div>
   )
 }
 
