@@ -1,10 +1,9 @@
-import { MUPDF_LOADED, MupdfWorker } from "../workers/mupdf.worker";
+import { MupdfWorker } from "../workers/mupdf.worker";
 import * as Comlink from "comlink";
 import type { Remote } from "comlink";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef } from "react";
 
 export function useMupdf() {
-  const [isWorkerInitialized, setIsWorkerInitialized] = useState(false);
   const mupdfWorker = useRef<Remote<MupdfWorker>>(null);
 
   useEffect(() => {
@@ -16,23 +15,9 @@ export function useMupdf() {
     );
     mupdfWorker.current = Comlink.wrap<MupdfWorker>(worker);
 
-    worker.addEventListener("message", (event) => {
-      if (event.data === MUPDF_LOADED) {
-        setIsWorkerInitialized(true);
-      }
-    });
-
     return () => {
       worker.terminate();
     };
-  }, []);
-
-  const loadDocument = useCallback((arrayBuffer: ArrayBuffer) => {
-    return mupdfWorker.current!.loadDocument(arrayBuffer);
-  }, []);
-
-  const removeReferences = useCallback((arrayBuffer: ArrayBuffer) => {
-    return mupdfWorker.current!.removeReferences(arrayBuffer);
   }, []);
 
   const downloadDocument = useCallback(async (filename: string) => {
@@ -44,16 +29,14 @@ export function useMupdf() {
     a.href = url;
     a.download = download;
     a.click();
-  }, [])
+  }, []);
 
   // ===> Here you can create hooks <===
   // ===> that use the methods of the worker. <===
   // ===> You can use useCallback to avoid unnecessary rerenders <===  
 
   return {
-    isWorkerInitialized,
-    loadDocument,
-    removeReferences,
+    mupdf: mupdfWorker.current,
     downloadDocument,
   };
 }

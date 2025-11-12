@@ -24,14 +24,14 @@ export class MupdfWorker {
     // ===> that call statics and methods <===
     // ===> from mupdf (in ./node_modules/mupdf/dist/mupdf.js) <===
 
-    loadDocument(document: ArrayBuffer): boolean {
+    loadDocument(document: ArrayBuffer) {
 
         this.pdfdocument = mupdf.Document.openDocument(
             document,
             "application/pdf"
         ) as PDFDocument;
 
-        return true;
+        return this.pdfdocument;
     }
 
     getPageCount(): number {
@@ -49,11 +49,11 @@ export class MupdfWorker {
             const page = doc.loadPage(pageNumber) as mupdf.PDFPage;
             const text = page.toStructuredText().asText();
             const matches = text.matchAll(regex);
-            console.log(text);
+            console.debug(text);
 
             if (matches) {
                 for (const match of matches) {
-                    console.log("found", match);
+                    console.debug("found", match);
                     const hits = page.search(match[0]);
 
                     for (const quads of hits) {
@@ -69,7 +69,7 @@ export class MupdfWorker {
         }
     }
 
-    async getDocumentBytes(): Promise<Uint8Array> {
+    async getDocumentBytes() {
         if (!this.pdfdocument) throw new Error("Document not loaded");
 
         const buffer = this.pdfdocument.asPDF()?.saveToBuffer().asUint8Array()!;

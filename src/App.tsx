@@ -4,14 +4,21 @@ import { useState } from 'react';
 import { useMupdf } from './hooks/useMupdf.hook';
 
 function App() {
-  const { removeReferences, downloadDocument } = useMupdf();
+  const { mupdf, downloadDocument } = useMupdf();
   const [file, setFile] = useState<File | null>(null);
+  const [loading, setLoading] = useState(false);
 
-  async function onRemoveReferences() {
+  async function doRemoveReferences() {
     const pdf = file!;
     const buffer = await pdf.arrayBuffer();
-    removeReferences(buffer);
+    mupdf?.removeReferences(buffer);
     downloadDocument(pdf.name);
+  }
+
+  async function onRemoveReferences() {
+    setLoading(true);
+    await doRemoveReferences();
+    setLoading(false);
   }
 
   return (
@@ -24,7 +31,7 @@ function App() {
         <div className="px-2 md:px-4 w-2xs sm:w-sm md:w-lg">
           <div className="flex grow flex-col gap-4">
             <FilePicker onFileChange={setFile} />
-            <button className="text-white p-2 bg-slate-950 cursor-pointer rounded-xl disabled:bg-slate-900 disabled:cursor-not-allowed hover:bg-slate-900" onClick={onRemoveReferences} disabled={!file}>Remove references</button>
+            <button className="text-white p-2 bg-slate-950 cursor-pointer rounded-xl disabled:bg-slate-900 disabled:cursor-not-allowed hover:bg-slate-900" onClick={onRemoveReferences} disabled={!file}>{loading ? "Loading..." : "Remove references"}</button>
           </div>
         </div>
       </main>
